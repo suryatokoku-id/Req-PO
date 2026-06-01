@@ -107,6 +107,49 @@ button{
   overflow:auto;
 }
 
+.product-card{
+  background:#fff;
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:12px;
+  box-shadow:0 2px 4px rgba(0,0,0,.08);
+}
+
+.product-title{
+  font-weight:bold;
+  font-size:15px;
+  margin-bottom:10px;
+  color:#1e4b93;
+}
+
+.product-info{
+  font-size:13px;
+  line-height:1.8;
+  color:#444;
+}
+
+.qty-input{
+  margin-top:10px;
+}
+
+.qty-input input{
+  width:100%;
+  padding:10px;
+  font-size:16px;
+}
+
+.jumlah-rp{
+  margin-top:10px;
+  font-weight:bold;
+  color:#1e4b93;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px 15px;
+}
+  
 </style>
 </head>
 
@@ -172,33 +215,7 @@ Rp <span id="totalHpp">0</span>
 
 <br>
 
-<div class="card">
-
-<div class="table-wrapper">
-
-<table>
-
-<thead>
-<tr>
-<th>No</th>
-<th>Barcode</th>
-<th>Nama Barang</th>
-<th>HPP</th>
-<th>QOH</th>
-<th>Std</th>
-<th>Penj.</th>
-<th>Qty Req</th>
-<th>Jumlah Rp</th>
-</tr>
-</thead>
-
-<tbody id="tbody"></tbody>
-
-</table>
-
-</div>
-
-</div>
+<div id="productList"></div>
 
 <button onclick="submitPO()">
 Kirim Request Order
@@ -312,55 +329,62 @@ function loadGroup(){
 
 function renderTable(){
 
-  let html="";
+  let html = "";
 
   CURRENT_ITEMS.forEach((r,i)=>{
 
-    const qty =
-      Math.max(
-        Number(r.stdStok)-Number(r.qoh),
-        0
-      );
-
-    r.qtyReq = qty;
-    r.jumlahRp = qty * r.hpp;
+    r.qtyReq = 0;
+    r.jumlahRp = 0;
 
     html += `
-      <tr>
 
-      <td>${i+1}</td>
+    <div class="product-card">
 
-      <td>${r.barcode}</td>
+      <div class="product-title">
+        ${r.namaBarang}
+      </div>
 
-      <td>${r.namaBarang}</td>
+      <div class="info-grid">
 
-      <td>${format(r.hpp)}</td>
+        <div><b>Barcode</b><br>${r.barcode}</div>
 
-      <td>${r.qoh}</td>
+        <div><b>HPP</b><br>Rp ${format(r.hpp)}</div>
 
-      <td>${r.stdStok}</td>
+        <div><b>QOH</b><br>${r.qoh}</div>
 
-      <td>${r.penjualan}</td>
+        <div><b>Std Stok</b><br>${r.stdStok}</div>
 
-      <td>
-      <input
-      class="qty"
-      type="number"
-      value="${qty}"
-      min="0"
-      oninput="updateQty(${i},this.value)">
-      </td>
+        <div><b>Penjualan</b><br>${r.penjualan}</div>
 
-      <td id="rp${i}">
-      ${format(r.jumlahRp)}
-      </td>
+      </div>
 
-      </tr>
+      <div class="qty-input">
+
+        <label>Qty Request</label>
+
+        <input
+          type="number"
+          min="0"
+          placeholder="Masukkan Qty"
+          oninput="updateQty(${i},this.value)"
+        >
+
+      </div>
+
+      <div
+        class="jumlah-rp"
+        id="rp${i}"
+      >
+        Rp 0
+      </div>
+
+    </div>
+
     `;
 
   });
 
-  document.getElementById("tbody")
+  document.getElementById("productList")
     .innerHTML = html;
 
   calculateTotal();
@@ -369,7 +393,7 @@ function renderTable(){
 
 function updateQty(index,val){
 
-  val = Number(val);
+  val = Number(val) || 0;
 
   CURRENT_ITEMS[index].qtyReq =
     val;
@@ -380,6 +404,7 @@ function updateQty(index,val){
   document.getElementById(
     "rp"+index
   ).innerHTML =
+    "Rp " +
     format(
       CURRENT_ITEMS[index].jumlahRp
     );
