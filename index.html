@@ -194,18 +194,23 @@ button{
 
 <div class="card">
 
-<div class="row">
-
-<div>
 <label>PIC</label>
 <select id="pic"></select>
-</div>
+
+<br>
+
+<div class="row">
 
 <div>
 <label>Grup PO</label>
 <select id="group"></select>
 </div>
 
+<div>
+<label>No PO</label>
+<input id="noPo" readonly>
+</div>
+
 </div>
 
 <br>
@@ -213,18 +218,9 @@ button{
 <div class="row">
 
 <div>
-<label>No PO</label>
-<input id="noPo" readonly>
-</div>
-
-<div>
 <label>Tanggal PO Terakhir</label>
 <input id="tglPo" readonly>
 </div>
-
-</div>
-
-<br>
 
 <div>
 <label>Keterangan</label>
@@ -344,7 +340,9 @@ function loadGroup(){
     CURRENT_ITEMS[0].noPo;
 
   document.getElementById("tglPo").value =
-    CURRENT_ITEMS[0].tglPo;
+  formatTanggal(
+    CURRENT_ITEMS[0].tglPo
+  );
 
   document.getElementById("ket").value =
     CURRENT_ITEMS[0].keterangan;
@@ -581,6 +579,25 @@ function format(num){
 
   return Number(num)
     .toLocaleString("id-ID");
+
+}
+
+function formatTanggal(tgl){
+
+  if(!tgl) return "";
+
+  const d = new Date(tgl);
+
+  const hari =
+    String(d.getDate()).padStart(2,"0");
+
+  const bulan =
+    String(d.getMonth()+1).padStart(2,"0");
+
+  const tahun =
+    d.getFullYear();
+
+  return `${hari}-${bulan}-${tahun}`;
 
 }
 
