@@ -162,16 +162,18 @@ button{
 }
 
 .jumlah-box{
-  border:1px solid #ddd;
-  border-radius:6px;
-  padding:10px;
-  text-align:center;
+  width:100%;
 }
 
 .jumlah-value{
+  width:100%;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:6px;
   font-size:15px;
-  font-weight:700;
-  color:#1e4b93;
+  text-align:center;
+  background:#fafafa;
+  font-weight:600;
 }
   
 </style>
@@ -370,50 +372,45 @@ function renderTable(){
 
       <div class="top-grid">
 
-        <div>
-          <div class="label-small">Barcode</div>
-          <div class="value-small">${r.barcode}</div>
-        </div>
+  <div>
+    <div class="label-small">Barcode</div>
+    <div class="value-small">
+      ${r.barcode}
+    </div>
+  </div>
 
-        <div>
-          <div class="label-small">HPP</div>
-          <div class="value-small">
-            Rp ${format(r.hpp)}
-          </div>
-        </div>
+  <div style="text-align:center;">
+    <div class="label-small">QOH</div>
+    <div class="value-small">
+      ${r.qoh}
+    </div>
+  </div>
 
-      </div>
+</div>
 
       <div class="mid-grid">
 
-        <div>
-          <div class="label-small">
-            QOH
-          </div>
-          <div class="value-small">
-            ${r.qoh}
-          </div>
-        </div>
+  <div>
+    <div class="label-small">
+      Std. Stok 2 Minggu
+    </div>
+    <div class="value-small">
+      ${r.stdStok}
+    </div>
+  </div>
 
-        <div>
-          <div class="label-small">
-            Std Stok 2 Minggu
-          </div>
-          <div class="value-small">
-            ${r.stdStok}
-          </div>
-        </div>
+  <div></div>
 
-        <div>
-          <div class="label-small">
-            Penj. 2 Minggu Terakhir
-          </div>
-          <div class="value-small">
-            ${r.penjualan}
-          </div>
-        </div>
+  <div>
+    <div class="label-small">
+      Penj. 2 Minggu Terakhir
+    </div>
+    <div class="value-small">
+      ${r.penjualan}
+    </div>
+  </div>
 
-      </div>
+</div>
 
       <div class="bottom-grid">
 
