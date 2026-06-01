@@ -116,38 +116,62 @@ button{
 }
 
 .product-title{
-  font-weight:bold;
   font-size:15px;
-  margin-bottom:10px;
+  font-weight:700;
   color:#1e4b93;
+  margin-bottom:12px;
 }
 
-.product-info{
+.top-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-bottom:12px;
+}
+
+.mid-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:12px;
+  text-align:center;
+}
+
+.bottom-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  align-items:end;
+}
+
+.label-small{
+  font-size:11px;
+  color:#777;
+  margin-bottom:4px;
+}
+
+.value-small{
   font-size:13px;
-  line-height:1.8;
-  color:#444;
+  font-weight:600;
 }
 
 .qty-input{
-  margin-top:10px;
-}
-
-.qty-input input{
   width:100%;
   padding:10px;
-  font-size:16px;
+  font-size:15px;
 }
 
-.jumlah-rp{
-  margin-top:10px;
-  font-weight:bold;
+.jumlah-box{
+  border:1px solid #ddd;
+  border-radius:6px;
+  padding:10px;
+  text-align:center;
+}
+
+.jumlah-value{
+  font-size:15px;
+  font-weight:700;
   color:#1e4b93;
-}
-
-.info-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:5px 15px;
 }
   
 </style>
@@ -344,38 +368,84 @@ function renderTable(){
         ${r.namaBarang}
       </div>
 
-      <div class="info-grid">
+      <div class="top-grid">
 
-        <div><b>Barcode</b><br>${r.barcode}</div>
+        <div>
+          <div class="label-small">Barcode</div>
+          <div class="value-small">${r.barcode}</div>
+        </div>
 
-        <div><b>HPP</b><br>Rp ${format(r.hpp)}</div>
-
-        <div><b>QOH</b><br>${r.qoh}</div>
-
-        <div><b>Std Stok</b><br>${r.stdStok}</div>
-
-        <div><b>Penjualan</b><br>${r.penjualan}</div>
-
-      </div>
-
-      <div class="qty-input">
-
-        <label>Qty Request</label>
-
-        <input
-          type="number"
-          min="0"
-          placeholder="Masukkan Qty"
-          oninput="updateQty(${i},this.value)"
-        >
+        <div>
+          <div class="label-small">HPP</div>
+          <div class="value-small">
+            Rp ${format(r.hpp)}
+          </div>
+        </div>
 
       </div>
 
-      <div
-        class="jumlah-rp"
-        id="rp${i}"
-      >
-        Rp 0
+      <div class="mid-grid">
+
+        <div>
+          <div class="label-small">
+            QOH
+          </div>
+          <div class="value-small">
+            ${r.qoh}
+          </div>
+        </div>
+
+        <div>
+          <div class="label-small">
+            Std Stok 2 Minggu
+          </div>
+          <div class="value-small">
+            ${r.stdStok}
+          </div>
+        </div>
+
+        <div>
+          <div class="label-small">
+            Penj. 2 Minggu Terakhir
+          </div>
+          <div class="value-small">
+            ${r.penjualan}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bottom-grid">
+
+        <div>
+          <div class="label-small">
+            Qty Request
+          </div>
+
+          <input
+            class="qty-input"
+            type="number"
+            min="0"
+            placeholder="0"
+            oninput="updateQty(${i},this.value)"
+          >
+        </div>
+
+        <div class="jumlah-box">
+
+          <div class="label-small">
+            Jumlah HPP
+          </div>
+
+          <div
+            class="jumlah-value"
+            id="rp${i}"
+          >
+            Rp 0
+          </div>
+
+        </div>
+
       </div>
 
     </div>
