@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+<title>Request PO</title>
+
+<style>
+
+body{
+font-family:Arial;
+padding:20px;
+}
+
+.header{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-bottom:20px;
+}
+
+input,select{
+padding:8px;
+width:100%;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:8px;
+}
+
+th{
+background:#1e4b93;
+color:white;
+}
+
+.qty{
+width:80px;
+}
+
+.total{
+font-size:22px;
+font-weight:bold;
+margin:15px 0;
+}
+
+button{
+padding:12px 20px;
+background:#1e4b93;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+<body>
+
+<h2>Form Request PO</h2>
+
+<div class="header">
+
+<div>
+<label>PIC</label>
+<select id="pic"></select>
+</div>
+
+<div>
+<label>Grup PO</label>
+<select id="group"></select>
+</div>
+
+<div>
+<label>No PO</label>
+<input id="noPo" readonly>
+</div>
+
+<div>
+<label>Tgl PO Terakhir</label>
+<input id="tglPo" readonly>
+</div>
+
+<div>
+<label>Keterangan</label>
+<input id="ket" readonly>
+</div>
+
+</div>
+
+<div class="total">
+Total HPP :
+Rp <span id="totalHpp">0</span>
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>No</th>
+<th>Barcode</th>
+<th>Nama Barang</th>
+<th>HPP</th>
+<th>QOH</th>
+<th>Std Stok</th>
+<th>Penjualan</th>
+<th>Qty Req</th>
+<th>Jumlah Rp</th>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+<br>
+
+<button onclick="submitPO()">
+Kirim Request Order
+</button>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwy2S3dmrOsHrmx9brEPxrvhZOMlxZvCClcQFDRNJzci8Wfx3Q6p_yqCXzOY06NP3rR/exec";
+
+let currentData=[];
+
+loadInit();
+
+async function loadInit(){
+
+const res =
+await fetch(API_URL + "?action=init");
+
+const data =
+await res.json();
+
+const pic =
+document.getElementById("pic");
+
+data.pics.forEach(x=>{
+pic.innerHTML +=
+`<option>${x}</option>`;
+});
+
+const group =
+document.getElementById("group");
+
+group.innerHTML =
+`<option value="">Pilih Grup</option>`;
+
+data.groups.forEach(x=>{
+group.innerHTML +=
+`<option>${x}</option>`;
+});
+
+group.addEventListener(
+"change",
+loadGroup
+);
+
+}
+
+async function loadGroup(){
+
+const group =
+document.getElementById("group").value;
+
+const res =
+await fetch(
+API_URL +
+"?action=group&group=" +
+encodeURIComponent(group)
+);
+
+const data =
+await res.json();
+
+document.getElementById("noPo").value =
+data.noPo;
+
+document.getElementById("tglPo").value =
+data.tglPo;
+
+document.getElementById("ket").value =
+data.keterangan;
+
+currentData = data.items;
+
+renderTable();
+
+}
+
+function renderTable(){
+
+let html="";
+
+currentData.forEach((r,i)=>{
+
+const qty =
+Math.max(
+Number(r.stdStok)-Number(r.qoh),
+0
+);
+
+const jumlah =
+qty * Number(r.hpp);
+
+html += `
+<tr>
+
+<td>${r.no}</td>
+
+<td>${r.barcode}</td>
+
+<td>${r.namaBarang}</td>
+
+<td>${format(r.hpp)}</td>
+
+<td>${r.qoh}</td>
+
+<td>${r.stdStok}</td>
+
+<td>${r.penjualan}</td>
+
+<td>
+<input
+class="qty"
+type="number"
+value="${qty}"
+oninput="updateRow(${i},this.value)"
+>
+</td>
+
+<td id="rp${i}">
+${format(jumlah)}
+</td>
+
+</tr>
+`;
+
+r.qtyReq = qty;
+r.jumlahRp = jumlah;
+
+});
+
+document.getElementById("tbody")
+.innerHTML = html;
+
+calculateTotal();
+
+}
+
+function updateRow(i,val){
+
+currentData[i].qtyReq =
+Number(val);
+
+currentData[i].jumlahRp =
+Number(val) *
+Number(currentData[i].hpp);
+
+document.getElementById(
+"rp"+i
+).innerHTML =
+format(
+currentData[i].jumlahRp
+);
+
+calculateTotal();
+
+}
+
+function calculateTotal(){
+
+let total=0;
+
+currentData.forEach(r=>{
+total += Number(r.jumlahRp);
+});
+
+document.getElementById(
+"totalHpp"
+).innerHTML =
+format(total);
+
+}
+
+async function submitPO(){
+
+const payload = {
+
+pic:
+document.getElementById("pic").value,
+
+grupPo:
+document.getElementById("group").value,
+
+noPo:
+document.getElementById("noPo").value,
+
+items:
+currentData.filter(
+x=>x.qtyReq>0
+)
+
+};
+
+const res =
+await fetch(API_URL,{
+method:"POST",
+body:JSON.stringify(payload)
+});
+
+const result =
+await res.json();
+
+if(result.success){
+alert("Request PO berhasil dikirim");
+}
+
+}
+
+function format(num){
+
+return Number(num)
+.toLocaleString("id-ID");
+
+}
+
+</script>
+
+</body>
+</html>
