@@ -1,71 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Request PO</title>
 
 <style>
 
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
 body{
-font-family:Arial;
-padding:20px;
+  margin:0;
+  background:#f5f5f5;
 }
 
-.header{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-margin-bottom:20px;
+#loading{
+  position:fixed;
+  inset:0;
+  background:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
 }
 
-input,select{
-padding:8px;
-width:100%;
+.container{
+  padding:15px;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+label{
+  font-size:12px;
+  color:#666;
+  display:block;
+  margin-bottom:5px;
+}
+
+select,input{
+  width:100%;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:6px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.total-box{
+  background:#1e4b93;
+  color:white;
+  padding:15px;
+  border-radius:10px;
+  font-size:20px;
+  font-weight:bold;
+  text-align:center;
 }
 
 table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-border:1px solid #ddd;
-padding:8px;
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
 }
 
 th{
-background:#1e4b93;
-color:white;
+  background:#1e4b93;
+  color:white;
+  padding:8px;
+}
+
+td{
+  padding:8px;
+  border:1px solid #ddd;
 }
 
 .qty{
-width:80px;
-}
-
-.total{
-font-size:22px;
-font-weight:bold;
-margin:15px 0;
+  width:80px;
+  text-align:center;
 }
 
 button{
-padding:12px 20px;
-background:#1e4b93;
-color:white;
-border:none;
-cursor:pointer;
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:8px;
+  background:#1e4b93;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.table-wrapper{
+  overflow:auto;
 }
 
 </style>
-
 </head>
+
 <body>
 
-<h2>Form Request PO</h2>
+<div id="loading">
+  <div>
+    <h2>Memuat Data...</h2>
+    <p>Mohon tunggu sebentar</p>
+  </div>
+</div>
 
-<div class="header">
+<div id="app" style="display:none">
+
+<div class="container">
+
+<div class="card">
+
+<div class="row">
 
 <div>
 <label>PIC</label>
@@ -77,15 +137,25 @@ cursor:pointer;
 <select id="group"></select>
 </div>
 
+</div>
+
+<br>
+
+<div class="row">
+
 <div>
 <label>No PO</label>
 <input id="noPo" readonly>
 </div>
 
 <div>
-<label>Tgl PO Terakhir</label>
+<label>Tanggal PO Terakhir</label>
 <input id="tglPo" readonly>
 </div>
+
+</div>
+
+<br>
 
 <div>
 <label>Keterangan</label>
@@ -94,10 +164,17 @@ cursor:pointer;
 
 </div>
 
-<div class="total">
-Total HPP :
+<div class="total-box">
+Total HPP
+<br>
 Rp <span id="totalHpp">0</span>
 </div>
+
+<br>
+
+<div class="card">
+
+<div class="table-wrapper">
 
 <table>
 
@@ -108,8 +185,8 @@ Rp <span id="totalHpp">0</span>
 <th>Nama Barang</th>
 <th>HPP</th>
 <th>QOH</th>
-<th>Std Stok</th>
-<th>Penjualan</th>
+<th>Std</th>
+<th>Penj.</th>
 <th>Qty Req</th>
 <th>Jumlah Rp</th>
 </tr>
@@ -119,219 +196,293 @@ Rp <span id="totalHpp">0</span>
 
 </table>
 
-<br>
+</div>
+
+</div>
 
 <button onclick="submitPO()">
 Kirim Request Order
 </button>
 
+</div>
+
+</div>
+
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbwy2S3dmrOsHrmx9brEPxrvhZOMlxZvCClcQFDRNJzci8Wfx3Q6p_yqCXzOY06NP3rR/exec";
+"https://script.google.com/macros/s/AKfycbwJAWrmO0oXB9eS4kaH--fN-zWnV825U8XYd1thTQMuQ26zhh2sAbAhrpf2k9a51B9G/exec";
 
-let currentData=[];
+let ALL_DATA = [];
+let CURRENT_ITEMS = [];
 
-loadInit();
+loadData();
 
-async function loadInit(){
+async function loadData(){
 
-const res =
-await fetch(API_URL + "?action=init");
+  try{
 
-const data =
-await res.json();
+    const res =
+      await fetch(API_URL + "?action=all");
 
-const pic =
-document.getElementById("pic");
+    const data =
+      await res.json();
 
-data.pics.forEach(x=>{
-pic.innerHTML +=
-`<option>${x}</option>`;
-});
+    ALL_DATA = data.items;
 
-const group =
-document.getElementById("group");
+    fillPIC(data.pics);
+    fillGroup(data.groups);
 
-group.innerHTML =
-`<option value="">Pilih Grup</option>`;
+    document.getElementById("loading").style.display="none";
+    document.getElementById("app").style.display="block";
 
-data.groups.forEach(x=>{
-group.innerHTML +=
-`<option>${x}</option>`;
-});
+  }catch(err){
 
-group.addEventListener(
-"change",
-loadGroup
-);
+    alert("Gagal memuat data");
+
+    console.log(err);
+
+  }
 
 }
 
-async function loadGroup(){
+function fillPIC(pics){
 
-const group =
-document.getElementById("group").value;
+  const pic =
+    document.getElementById("pic");
 
-const res =
-await fetch(
-API_URL +
-"?action=group&group=" +
-encodeURIComponent(group)
-);
+  pic.innerHTML =
+    '<option value="">Pilih PIC</option>';
 
-const data =
-await res.json();
+  pics.forEach(x=>{
 
-document.getElementById("noPo").value =
-data.noPo;
+    pic.innerHTML +=
+      `<option>${x}</option>`;
 
-document.getElementById("tglPo").value =
-data.tglPo;
+  });
 
-document.getElementById("ket").value =
-data.keterangan;
+}
 
-currentData = data.items;
+function fillGroup(groups){
 
-renderTable();
+  const group =
+    document.getElementById("group");
+
+  group.innerHTML =
+    '<option value="">Pilih Grup</option>';
+
+  groups.forEach(x=>{
+
+    group.innerHTML +=
+      `<option>${x}</option>`;
+
+  });
+
+  group.addEventListener(
+    "change",
+    loadGroup
+  );
+
+}
+
+function loadGroup(){
+
+  const selected =
+    document.getElementById("group").value;
+
+  CURRENT_ITEMS =
+    ALL_DATA.filter(
+      x=>x.grupPo===selected
+    );
+
+  if(CURRENT_ITEMS.length===0) return;
+
+  document.getElementById("noPo").value =
+    CURRENT_ITEMS[0].noPo;
+
+  document.getElementById("tglPo").value =
+    CURRENT_ITEMS[0].tglPo;
+
+  document.getElementById("ket").value =
+    CURRENT_ITEMS[0].keterangan;
+
+  renderTable();
 
 }
 
 function renderTable(){
 
-let html="";
+  let html="";
 
-currentData.forEach((r,i)=>{
+  CURRENT_ITEMS.forEach((r,i)=>{
 
-const qty =
-Math.max(
-Number(r.stdStok)-Number(r.qoh),
-0
-);
+    const qty =
+      Math.max(
+        Number(r.stdStok)-Number(r.qoh),
+        0
+      );
 
-const jumlah =
-qty * Number(r.hpp);
+    r.qtyReq = qty;
+    r.jumlahRp = qty * r.hpp;
 
-html += `
-<tr>
+    html += `
+      <tr>
 
-<td>${r.no}</td>
+      <td>${i+1}</td>
 
-<td>${r.barcode}</td>
+      <td>${r.barcode}</td>
 
-<td>${r.namaBarang}</td>
+      <td>${r.namaBarang}</td>
 
-<td>${format(r.hpp)}</td>
+      <td>${format(r.hpp)}</td>
 
-<td>${r.qoh}</td>
+      <td>${r.qoh}</td>
 
-<td>${r.stdStok}</td>
+      <td>${r.stdStok}</td>
 
-<td>${r.penjualan}</td>
+      <td>${r.penjualan}</td>
 
-<td>
-<input
-class="qty"
-type="number"
-value="${qty}"
-oninput="updateRow(${i},this.value)"
->
-</td>
+      <td>
+      <input
+      class="qty"
+      type="number"
+      value="${qty}"
+      min="0"
+      oninput="updateQty(${i},this.value)">
+      </td>
 
-<td id="rp${i}">
-${format(jumlah)}
-</td>
+      <td id="rp${i}">
+      ${format(r.jumlahRp)}
+      </td>
 
-</tr>
-`;
+      </tr>
+    `;
 
-r.qtyReq = qty;
-r.jumlahRp = jumlah;
+  });
 
-});
+  document.getElementById("tbody")
+    .innerHTML = html;
 
-document.getElementById("tbody")
-.innerHTML = html;
-
-calculateTotal();
+  calculateTotal();
 
 }
 
-function updateRow(i,val){
+function updateQty(index,val){
 
-currentData[i].qtyReq =
-Number(val);
+  val = Number(val);
 
-currentData[i].jumlahRp =
-Number(val) *
-Number(currentData[i].hpp);
+  CURRENT_ITEMS[index].qtyReq =
+    val;
 
-document.getElementById(
-"rp"+i
-).innerHTML =
-format(
-currentData[i].jumlahRp
-);
+  CURRENT_ITEMS[index].jumlahRp =
+    val * CURRENT_ITEMS[index].hpp;
 
-calculateTotal();
+  document.getElementById(
+    "rp"+index
+  ).innerHTML =
+    format(
+      CURRENT_ITEMS[index].jumlahRp
+    );
+
+  calculateTotal();
 
 }
 
 function calculateTotal(){
 
-let total=0;
+  let total = 0;
 
-currentData.forEach(r=>{
-total += Number(r.jumlahRp);
-});
+  CURRENT_ITEMS.forEach(x=>{
 
-document.getElementById(
-"totalHpp"
-).innerHTML =
-format(total);
+    total += Number(
+      x.jumlahRp || 0
+    );
+
+  });
+
+  document.getElementById(
+    "totalHpp"
+  ).innerHTML =
+    format(total);
 
 }
 
 async function submitPO(){
 
-const payload = {
+  const pic =
+    document.getElementById("pic").value;
 
-pic:
-document.getElementById("pic").value,
+  const grupPo =
+    document.getElementById("group").value;
 
-grupPo:
-document.getElementById("group").value,
+  const noPo =
+    document.getElementById("noPo").value;
 
-noPo:
-document.getElementById("noPo").value,
+  if(!pic){
+    alert("Pilih PIC");
+    return;
+  }
 
-items:
-currentData.filter(
-x=>x.qtyReq>0
-)
+  if(!grupPo){
+    alert("Pilih Grup PO");
+    return;
+  }
 
-};
+  const items =
+    CURRENT_ITEMS.filter(
+      x=>x.qtyReq>0
+    );
 
-const res =
-await fetch(API_URL,{
-method:"POST",
-body:JSON.stringify(payload)
-});
+  if(items.length===0){
+    alert("Tidak ada Qty Request");
+    return;
+  }
 
-const result =
-await res.json();
+  const btn =
+    document.querySelector("button");
 
-if(result.success){
-alert("Request PO berhasil dikirim");
-}
+  btn.disabled = true;
+  btn.innerText = "Mengirim...";
+
+  const payload = {
+    pic,
+    grupPo,
+    noPo,
+    items
+  };
+
+  const res =
+    await fetch(API_URL,{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+  const result =
+    await res.json();
+
+  btn.disabled = false;
+  btn.innerText = "Kirim Request Order";
+
+  if(result.success){
+
+    alert(
+      "Request berhasil dikirim"
+    );
+
+  }else{
+
+    alert(
+      result.message
+    );
+
+  }
 
 }
 
 function format(num){
 
-return Number(num)
-.toLocaleString("id-ID");
+  return Number(num)
+    .toLocaleString("id-ID");
 
 }
 
