@@ -71,6 +71,7 @@ select,input{
   font-weight:bold;
   text-align:center;
   margin-top:15px;
+  margin-bottom:15px;
 }
 
 table{
@@ -195,6 +196,15 @@ select{
   margin-bottom:10px;
   font-weight:600;
 }
+
+.page-title{
+  text-align:center;
+  font-size:28px;
+  font-weight:700;
+  color:#1e4b93;
+  margin-bottom:15px;
+  letter-spacing:1px;
+} 
   
 </style>
 </head>
@@ -212,6 +222,10 @@ select{
 
 <div class="container">
 
+<div class="page-title">
+  REQUEST ORDER
+</div>  
+  
 <div class="card">
 
 <select id="pic">
@@ -262,6 +276,8 @@ select{
 
 </div>
 
+<div id="productList"></div>
+
 <div class="total-box">
 Total HPP
 <br>
@@ -269,8 +285,6 @@ Rp <span id="totalHpp">0</span>
 </div>
 
 <br>
-
-<div id="productList"></div>
 
 <button onclick="submitPO()">
 Kirim Request Order
