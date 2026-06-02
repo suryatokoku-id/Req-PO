@@ -260,7 +260,24 @@ select{
   }
 }
 
+.ts-control{
+  border-radius:6px !important;
+  min-height:42px;
+}
+
+.ts-control input{
+  text-align:left !important;
+}
+
+.ts-dropdown{
+  font-size:14px;
+}
+
 </style>
+
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
 </head>
 
 <body>
@@ -371,6 +388,9 @@ let ALL_DATA = [];
 let CURRENT_ITEMS = [];
 let FILTERED_ITEMS = [];
 
+let picSelect;
+let groupSelect;
+
 const loadingSteps = [
   "Memuat data PIC",
   "Memuat data Grup PO",
@@ -378,7 +398,8 @@ const loadingSteps = [
   "Memuat Qty On Hand",
   "Memuat Standar Stok",
   "Memuat Data Penjualan",
-  "Mohon tunggu.. gak lama kok 😊🙏"
+  "Mohon tunggu...",
+  "gak lama kok 😊🙏"
 ];
 
 async function playLoading(){
@@ -402,7 +423,7 @@ async function playLoading(){
     output.appendChild(line);
 
     await new Promise(
-      r => setTimeout(r,2500)
+      r => setTimeout(r,3500)
     );
 
   }
@@ -462,14 +483,24 @@ function fillPIC(pics){
     document.getElementById("pic");
 
   pic.innerHTML =
-'<option value="" selected>Pilih PIC</option>';
+    '<option value="">Pilih PIC</option>';
 
   pics.forEach(x=>{
 
     pic.innerHTML +=
-      `<option>${x}</option>`;
+      `<option value="${x}">${x}</option>`;
 
   });
+
+  if(picSelect){
+    picSelect.destroy();
+  }
+
+  picSelect = new TomSelect("#pic",{
+  create:false,
+  openOnFocus:true,
+  placeholder:"Cari PIC..."
+});
 
 }
 
@@ -479,14 +510,24 @@ function fillGroup(groups){
     document.getElementById("group");
 
   group.innerHTML =
-'<option value="" selected>Grup PO</option>';
+    '<option value="">Grup PO</option>';
 
   groups.forEach(x=>{
 
     group.innerHTML +=
-      `<option>${x}</option>`;
+      `<option value="${x}">${x}</option>`;
 
   });
+
+  if(groupSelect){
+    groupSelect.destroy();
+  }
+
+  groupSelect = new TomSelect("#group",{
+  create:false,
+  openOnFocus:true,
+  placeholder:"Cari Grup PO..."
+});
 
   group.addEventListener(
     "change",
