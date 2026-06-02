@@ -234,6 +234,9 @@ select{
   margin-bottom:15px;
   border-bottom:1px solid #333;
   padding-bottom:10px;
+  text-align:center;
+  font-size:18px;
+  letter-spacing:1px;
 }
 
 #terminalOutput{
@@ -394,12 +397,12 @@ async function playLoading(){
       "terminal-line";
 
     line.innerHTML =
-      "> " + step;
+  "✓ " + step;
 
     output.appendChild(line);
 
     await new Promise(
-      r => setTimeout(r,250)
+      r => setTimeout(r,500)
     );
 
   }
