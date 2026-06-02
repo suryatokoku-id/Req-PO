@@ -211,7 +211,8 @@ select{
   padding:12px;
   border:1px solid #ddd;
   border-radius:8px;
-  margin-bottom:10px;
+  margin-top:12px;
+  margin-bottom:12px;
   text-align:left;
   font-size:14px;
 }
@@ -450,8 +451,8 @@ function renderTable(){
 
   FILTERED_ITEMS.forEach((r,i)=>{
 
-    r.qtyReq = 0;
-    r.jumlahRp = 0;
+    r.qtyReq = r.qtyReq || 0;
+    r.jumlahRp = r.jumlahRp || 0;
 
     html += `
 
@@ -517,12 +518,13 @@ function renderTable(){
           </div>
 
           <input
-            class="qty-input"
-            type="number"
-            min="0"
-            placeholder="0"
-            oninput="updateQty(${i},this.value)"
-          >
+  class="qty-input"
+  type="number"
+  min="0"
+  value="${r.qtyReq || ''}"
+  placeholder="0"
+  oninput="updateQty(${i},this.value)"
+>
         </div>
 
         <div class="jumlah-box">
@@ -532,11 +534,11 @@ function renderTable(){
           </div>
 
           <div
-            class="jumlah-value"
-            id="rp${i}"
-          >
-            Rp 0
-          </div>
+  class="jumlah-value"
+  id="rp${i}"
+>
+  Rp ${format(r.jumlahRp || 0)}
+</div>
 
         </div>
 
