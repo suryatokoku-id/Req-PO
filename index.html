@@ -205,6 +205,16 @@ select{
   margin-bottom:15px;
   letter-spacing:1px;
 } 
+
+#searchProduct{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  margin-bottom:10px;
+  text-align:left;
+  font-size:14px;
+}
   
 </style>
 </head>
@@ -276,6 +286,15 @@ select{
 
 </div>
 
+<input
+  type="text"
+  id="searchProduct"
+  placeholder="🔍 Cari nama produk..."
+  oninput="filterProduct()"
+>
+
+<div style="height:10px;"></div>
+
 <div id="productList"></div>
 
 <div class="total-box">
@@ -299,6 +318,7 @@ const API_URL =
 
 let ALL_DATA = [];
 let CURRENT_ITEMS = [];
+let FILTERED_ITEMS = [];
 
 loadData();
 
@@ -379,6 +399,8 @@ function loadGroup(){
       x=>x.grupPo===selected
     );
 
+  FILTERED_ITEMS = [...CURRENT_ITEMS];
+
   if(CURRENT_ITEMS.length===0) return;
 
   document.getElementById("noPo").value =
@@ -396,11 +418,37 @@ function loadGroup(){
 
 }
 
+function filterProduct(){
+
+  const keyword =
+    document.getElementById("searchProduct")
+    .value
+    .toLowerCase();
+
+  FILTERED_ITEMS =
+    CURRENT_ITEMS.filter(item =>
+
+      item.namaBarang
+        .toLowerCase()
+        .includes(keyword)
+
+      ||
+
+      String(item.barcode)
+        .toLowerCase()
+        .includes(keyword)
+
+    );
+
+  renderTable();
+
+}
+
 function renderTable(){
 
   let html = "";
 
-  CURRENT_ITEMS.forEach((r,i)=>{
+  FILTERED_ITEMS.forEach((r,i)=>{
 
     r.qtyReq = 0;
     r.jumlahRp = 0;
