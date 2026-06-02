@@ -396,9 +396,12 @@ function loadGroup(){
     document.getElementById("group").value;
 
   CURRENT_ITEMS =
-    ALL_DATA.filter(
-      x=>x.grupPo===selected
-    );
+  ALL_DATA
+    .filter(x => x.grupPo === selected)
+    .map((item,index) => ({
+      ...item,
+      itemId:index
+    }));
 
   FILTERED_ITEMS = [...CURRENT_ITEMS];
 
@@ -449,8 +452,8 @@ function renderTable(){
 
   let html = "";
 
-  FILTERED_ITEMS.forEach((r,i)=>{
-
+  FILTERED_ITEMS.forEach((r)=>{
+    
     r.qtyReq = r.qtyReq || 0;
     r.jumlahRp = r.jumlahRp || 0;
 
@@ -523,7 +526,7 @@ function renderTable(){
   min="0"
   value="${r.qtyReq || ''}"
   placeholder="0"
-  oninput="updateQty(${i},this.value)"
+  oninput="updateQty(${r.itemId},this.value)"
 >
         </div>
 
@@ -557,23 +560,19 @@ function renderTable(){
 
 }
 
-function updateQty(index,val){
+function updateQty(itemId,val){
 
   val = Number(val) || 0;
 
-  CURRENT_ITEMS[index].qtyReq =
-    val;
-
-  CURRENT_ITEMS[index].jumlahRp =
-    val * CURRENT_ITEMS[index].hpp;
-
-  document.getElementById(
-    "rp"+index
-  ).innerHTML =
-    "Rp " +
-    format(
-      CURRENT_ITEMS[index].jumlahRp
+  const item =
+    CURRENT_ITEMS.find(
+      x => x.itemId === itemId
     );
+
+  if(!item) return;
+
+  item.qtyReq = val;
+  item.jumlahRp = val * item.hpp;
 
   calculateTotal();
 
