@@ -377,7 +377,8 @@ const loadingSteps = [
   "Memuat data Master Item",
   "Memuat Qty On Hand",
   "Memuat Standar Stok",
-  "Memuat Data Penjualan"
+  "Memuat Data Penjualan",
+  "Mohon tunggu.. gak lama kok 😊🙏"
 ];
 
 async function playLoading(){
@@ -401,7 +402,7 @@ async function playLoading(){
     output.appendChild(line);
 
     await new Promise(
-      r => setTimeout(r,1500)
+      r => setTimeout(r,2500)
     );
 
   }
