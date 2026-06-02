@@ -34,9 +34,9 @@ body{
 
 .card{
   background:white;
-  padding:15px;
+  padding:12px;
   border-radius:10px;
-  margin-bottom:15px;
+  margin-bottom:12px;
   box-shadow:0 2px 5px rgba(0,0,0,.1);
 }
 
@@ -178,6 +178,23 @@ button{
   background:#fafafa;
   font-weight:600;
 }
+
+select,input{
+  text-align:center;
+}
+
+select{
+  text-align-last:center;
+}
+
+.tanggal-title{
+  text-align:center;
+  font-size:13px;
+  color:#666;
+  margin-top:15px;
+  margin-bottom:10px;
+  font-weight:600;
+}
   
 </style>
 </head>
@@ -197,38 +214,51 @@ button{
 
 <div class="card">
 
-<label>PIC</label>
-<select id="pic"></select>
+<select id="pic">
+  <option value="">Pilih PIC</option>
+</select>
 
 <div style="height:15px;"></div>
 
 <div class="row">
 
-<div>
-<label>Grup PO</label>
-<select id="group"></select>
-</div>
+  <div>
+    <select id="group">
+      <option value="">Grup PO</option>
+    </select>
+  </div>
 
-<div>
-<label>No PO</label>
-<input id="noPo" readonly>
-</div>
+  <div>
+    <input
+      id="noPo"
+      readonly
+      placeholder="No PO"
+    />
+  </div>
 
 </div>
 
 <br>
 
+<div class="tanggal-title">
+  Tanggal PO Terakhir
+</div>
+
 <div class="row">
 
-<div>
-<label>Tanggal PO Terakhir</label>
-<input id="tglPo" readonly>
-</div>
+  <div>
+    <input
+      id="tglPo"
+      readonly
+    />
+  </div>
 
-<div>
-<label>Keterangan</label>
-<input id="ket" readonly>
-</div>
+  <div>
+    <input
+      id="ket"
+      readonly
+    />
+  </div>
 
 </div>
 
@@ -294,7 +324,7 @@ function fillPIC(pics){
     document.getElementById("pic");
 
   pic.innerHTML =
-    '<option value="">Pilih PIC</option>';
+'<option value="" selected>Pilih PIC</option>';
 
   pics.forEach(x=>{
 
@@ -311,7 +341,7 @@ function fillGroup(groups){
     document.getElementById("group");
 
   group.innerHTML =
-    '<option value="">Pilih Grup</option>';
+'<option value="" selected>Grup PO</option>';
 
   groups.forEach(x=>{
 
