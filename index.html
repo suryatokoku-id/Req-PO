@@ -308,28 +308,55 @@ select{
   z-index:999;
 }
 
+.floating-nav{
+  position:fixed;
+  right:15px;
+  bottom:20px;
+
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+
+  z-index:999;
+}
+
 .fab-btn{
-  width:50px;
-  height:50px;
+  width:90px;
+  height:90px;
 
   border:none;
-  border-radius:50%;
+  border-radius:20px;
 
   background:#1e4b93;
   color:white;
 
-  font-size:22px;
-  font-weight:bold;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 
-  box-shadow:0 3px 10px rgba(0,0,0,.25);
+  box-shadow:0 4px 12px rgba(0,0,0,.25);
 
   cursor:pointer;
+
+  padding:0;
 }
 
-.fab-btn:hover{
-  transform:scale(1.05);
+.fab-icon{
+  font-size:36px;
+  line-height:1;
+  font-weight:bold;
 }
 
+.fab-text{
+  font-size:18px;
+  font-weight:600;
+  margin-top:2px;
+}
+
+.fab-btn:active{
+  transform:scale(.96);
+}
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
@@ -942,18 +969,14 @@ function formatTanggal(tgl){
 
 <div class="floating-nav">
 
-  <button
-    class="fab-btn"
-    onclick="scrollTopPage()"
-  >
-    ⬆
+  <button class="fab-btn" onclick="scrollTopPage()">
+    <span class="fab-icon">⌃</span>
+    <span class="fab-text">HOME</span>
   </button>
 
-  <button
-    class="fab-btn"
-    onclick="scrollBottomPage()"
-  >
-    ⬇
+  <button class="fab-btn" onclick="scrollBottomPage()">
+    <span class="fab-icon">⌄</span>
+    <span class="fab-text">END</span>
   </button>
 
 </div>
