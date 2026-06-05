@@ -121,7 +121,7 @@ button{
 
 .product-title{
   font-size:15px;
-  font-weight:750;
+  font-weight:800;
   color:#1e4b93;
   margin-bottom:12px;
 }
@@ -940,10 +940,11 @@ async function submitPO(){
   }
 
   const btn =
-    document.querySelector("button");
+  document.querySelector("button");
 
-  btn.disabled = true;
-  btn.innerText = "Mengirim...";
+btn.disabled = true;
+
+showLoadingPopup();
 
   const payload = {
     pic,
@@ -962,8 +963,6 @@ async function submitPO(){
     await res.json();
 
   btn.disabled = false;
-  btn.innerText = "Kirim Request Order";
-  showLoadingPopup();
 
   if(result.success){
 
@@ -972,10 +971,7 @@ async function submitPO(){
 }
   else{
 
-    alert(
-      result.message
-    );
-
+    showErrorPopup(result.message);
   }
 
 }
