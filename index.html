@@ -303,21 +303,11 @@ select{
 
   display:flex;
   flex-direction:column;
-  gap:10px;
-
-  z-index:999;
-}
-
-.floating-nav{
-  position:fixed;
-  right:15px;
-  bottom:20px;
-
-  display:flex;
-  flex-direction:column;
   gap:12px;
 
   z-index:999;
+
+  transition:.3s;
 }
 
 .fab-btn{
@@ -389,7 +379,8 @@ select{
   padding:12px;
   font-size:15px;
 }
-  
+
+
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
@@ -1116,6 +1107,31 @@ function formatTanggal(tgl){
 
 }
 
+window.addEventListener("scroll", () => {
+
+  const floatingNav =
+    document.querySelector(".floating-nav");
+
+  const scrollPosition =
+    window.innerHeight + window.scrollY;
+
+  const pageHeight =
+    document.body.offsetHeight;
+
+  if(scrollPosition >= pageHeight - 50){
+
+    floatingNav.style.opacity = "0";
+    floatingNav.style.pointerEvents = "none";
+
+  }else{
+
+    floatingNav.style.opacity = "1";
+    floatingNav.style.pointerEvents = "auto";
+
+  }
+
+});
+  
 </script>
 
 <div class="floating-nav">
