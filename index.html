@@ -468,7 +468,7 @@ const loadingSteps = [
   "Memuat Standar Stok",
   "Memuat Data Penjualan",
   "Mohon tunggu...",
-  "gak lama kok 😊🙏"
+  "Memuat semua data"
 ];
 
 async function playLoading(){
@@ -488,7 +488,7 @@ async function playLoading(){
 
     if(
   step === "Mohon tunggu..." ||
-  step === "gak lama kok 😊🙏"
+  step === "Memuat semua data"
 ){
 
   line.classList.add(
@@ -508,7 +508,7 @@ async function playLoading(){
     output.appendChild(line);
 
     await new Promise(
-      r => setTimeout(r,800)
+      r => setTimeout(r,500)
     );
 
   }
