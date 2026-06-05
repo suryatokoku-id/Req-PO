@@ -295,6 +295,41 @@ select{
   text-align:center;
   line-height:38px;
 }
+
+.floating-nav{
+  position:fixed;
+  right:15px;
+  bottom:20px;
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+
+  z-index:999;
+}
+
+.fab-btn{
+  width:50px;
+  height:50px;
+
+  border:none;
+  border-radius:50%;
+
+  background:#1e4b93;
+  color:white;
+
+  font-size:22px;
+  font-weight:bold;
+
+  box-shadow:0 3px 10px rgba(0,0,0,.25);
+
+  cursor:pointer;
+}
+
+.fab-btn:hover{
+  transform:scale(1.05);
+}
+
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
@@ -859,6 +894,24 @@ async function submitPO(){
 
 }
 
+function scrollTopPage(){
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+function scrollBottomPage(){
+
+  window.scrollTo({
+    top:document.body.scrollHeight,
+    behavior:"smooth"
+  });
+
+}
+  
 function format(num){
 
   return Number(num)
@@ -887,5 +940,23 @@ function formatTanggal(tgl){
 
 </script>
 
+<div class="floating-nav">
+
+  <button
+    class="fab-btn"
+    onclick="scrollTopPage()"
+  >
+    ⬆
+  </button>
+
+  <button
+    class="fab-btn"
+    onclick="scrollBottomPage()"
+  >
+    ⬇
+  </button>
+
+</div>
+  
 </body>
 </html>
