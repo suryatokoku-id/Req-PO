@@ -490,7 +490,7 @@ Kirim Request Order
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbw0SSTRgFy_n5pVsKZ9ZkoDcV8Vsd5aylEYhP36TuzEA-yh9CaEgQZaSiw0wvHE8Yc/exec";
+"https://script.google.com/macros/s/AKfycbwhKlYa8ujUQIrn2vPhqBfuW7wDdYu9npGNZ5usO8dXpAVa2RahDVw0kUW0FuULCLxy/exec";
 
 let ALL_DATA = [];
 let CURRENT_ITEMS = [];
@@ -1083,8 +1083,9 @@ function closePopup(){
   
 function format(num){
 
-  return Number(num)
-    .toLocaleString("id-ID");
+  return Math.round(
+    Number(num)
+  ).toLocaleString("id-ID");
 
 }
 
