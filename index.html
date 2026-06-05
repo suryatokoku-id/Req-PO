@@ -337,6 +337,11 @@ select{
 .fab-btn:active{
   transform:scale(.96);
 }
+
+.waiting-line{
+  color:#ffd54f;
+}
+
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
@@ -481,13 +486,29 @@ async function playLoading(){
     line.className =
       "terminal-line";
 
-    line.innerHTML =
-  "✓ " + step;
+    if(
+  step === "Mohon tunggu..." ||
+  step === "gak lama kok 😊🙏"
+){
+
+  line.classList.add(
+    "waiting-line"
+  );
+
+  line.innerHTML =
+    "> " + step;
+
+}else{
+
+  line.innerHTML =
+    "✓ " + step;
+
+}
 
     output.appendChild(line);
 
     await new Promise(
-      r => setTimeout(r,3500)
+      r => setTimeout(r,800)
     );
 
   }
