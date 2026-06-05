@@ -509,6 +509,7 @@ let ALL_DATA = [];
 let CURRENT_ITEMS = [];
 let FILTERED_ITEMS = [];
 
+let lastGroupPo = "";
 let picSelect;
 let groupSelect;
 
@@ -952,6 +953,7 @@ showLoadingPopup();
     noPo,
     items
   };
+  lastGroupPo = grupPo;
 
   const res =
     await fetch(API_URL,{
@@ -1034,15 +1036,32 @@ function showSuccessPopup(){
   document.getElementById(
     "popupText"
   ).innerHTML =
-    "Data berhasil dikirim ke Purchasing";
+    "Klik OK untuk mengirim notifikasi ke tim Purchasing";
 
   document.getElementById(
     "popupBtn"
   ).style.display = "block";
 
+  document.getElementById(
+    "popupBtn"
+  ).innerHTML =
+    "Kirim WhatsApp";
+
 }
 
 function closePopup(){
+
+  const pesan =
+    `Punten min, aku udah request order PO ${lastGroupPo} ya.. Terima kasih 😊🙏`;
+
+  const url =
+    "https://wa.me/62895402963709?text=" +
+    encodeURIComponent(pesan);
+
+  window.open(
+    url,
+    "_blank"
+  );
 
   document.getElementById(
     "popupModal"
