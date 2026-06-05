@@ -329,10 +329,6 @@ select{
   font-size:26px;
 }
 
-.fab-text{
-  font-size:11px;
-  letter-spacing:-4px;
-}
   
 .fab-btn:active{
   transform:scale(.96);
@@ -509,6 +505,7 @@ let ALL_DATA = [];
 let CURRENT_ITEMS = [];
 let FILTERED_ITEMS = [];
 
+let lastPic = "";
 let lastGroupPo = "";
 let picSelect;
 let groupSelect;
@@ -954,6 +951,7 @@ showLoadingPopup();
     items
   };
   lastGroupPo = grupPo;
+  lastPic = pic;
 
   const res =
     await fetch(API_URL,{
@@ -1045,14 +1043,14 @@ function showSuccessPopup(){
   document.getElementById(
     "popupBtn"
   ).innerHTML =
-    "Kirim WhatsApp";
+    "OK";
 
 }
 
 function closePopup(){
 
   const pesan =
-    `Punten min, aku udah request order PO ${lastGroupPo} ya.. Terima kasih 😊🙏`;
+  `Punten min, saya ${lastPic} sudah request order PO ${lastGroupPo} ya. Terima kasih 😊🙏`;
 
   const url =
     "https://wa.me/62895402963709?text=" +
@@ -1063,9 +1061,32 @@ function closePopup(){
     "_blank"
   );
 
+  // Tutup popup
   document.getElementById(
     "popupModal"
   ).style.display = "none";
+
+  // Reset data
+  CURRENT_ITEMS = [];
+  FILTERED_ITEMS = [];
+
+  document.getElementById("productList").innerHTML = "";
+  document.getElementById("totalHpp").innerHTML = "0";
+
+  document.getElementById("noPo").value = "";
+  document.getElementById("tglPo").value = "";
+  document.getElementById("ket").value = "";
+  document.getElementById("searchProduct").value = "";
+
+  // Reset Tom Select PIC
+  if(picSelect){
+    picSelect.clear();
+  }
+
+  // Reset Tom Select Grup PO
+  if(groupSelect){
+    groupSelect.clear();
+  }
 
 }
   
@@ -1100,14 +1121,12 @@ function formatTanggal(tgl){
 <div class="floating-nav">
 
   <button class="fab-btn" onclick="scrollTopPage()">
-    <span class="fab-icon">⌃</span>
-    <span class="fab-text">HOME</span>
-  </button>
+  <span class="fab-icon">⌃</span>
+</button>
 
-  <button class="fab-btn" onclick="scrollBottomPage()">
-    <span class="fab-icon">˅</span>
-    <span class="fab-text">END</span>
-  </button>
+<button class="fab-btn" onclick="scrollBottomPage()">
+  <span class="fab-icon">˅</span>
+</button>
 
 </div>
 
