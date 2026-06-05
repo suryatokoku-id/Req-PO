@@ -498,12 +498,16 @@ loadData();
 
 async function loadData(){
 
-  await playLoading();
-
   try{
 
+    const loadingPromise =
+      playLoading();
+
+    const fetchPromise =
+      fetch(API_URL + "?action=all");
+
     const res =
-      await fetch(API_URL + "?action=all");
+      await fetchPromise;
 
     const data =
       await res.json();
@@ -513,23 +517,25 @@ async function loadData(){
     fillPIC(data.pics);
     fillGroup(data.groups);
 
+    await loadingPromise;
+
     const output =
-  document.getElementById(
-    "terminalOutput"
-  );
+      document.getElementById(
+        "terminalOutput"
+      );
 
-output.innerHTML +=
-  '<div class="terminal-line">✓ Sistem siap digunakan</div>';
+    output.innerHTML +=
+      '<div class="terminal-line">✓ Sistem siap digunakan</div>';
 
-setTimeout(()=>{
+    setTimeout(()=>{
 
-  document.getElementById("loading")
-    .style.display="none";
+      document.getElementById("loading")
+        .style.display="none";
 
-  document.getElementById("app")
-    .style.display="block";
+      document.getElementById("app")
+        .style.display="block";
 
-},500);
+    },500);
 
   }catch(err){
 
