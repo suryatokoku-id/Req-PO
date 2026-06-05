@@ -342,6 +342,58 @@ select{
   color:#ffd54f;
 }
 
+.popup-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+
+  display:none;
+  justify-content:center;
+  align-items:center;
+
+  z-index:99999;
+}
+
+.popup-box{
+  width:90%;
+  max-width:320px;
+
+  background:white;
+  border-radius:15px;
+
+  padding:25px;
+  text-align:center;
+
+  box-shadow:0 5px 20px rgba(0,0,0,.2);
+}
+
+.popup-icon{
+  font-size:50px;
+  margin-bottom:10px;
+}
+
+.popup-title{
+  font-size:18px;
+  font-weight:bold;
+  color:#1e4b93;
+  margin-bottom:8px;
+}
+
+.popup-text{
+  color:#666;
+  margin-bottom:15px;
+}
+
+.popup-btn{
+  width:100%;
+  background:#1e4b93;
+  color:white;
+  border:none;
+  border-radius:8px;
+  padding:12px;
+  font-size:15px;
+}
+  
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
@@ -911,14 +963,14 @@ async function submitPO(){
 
   btn.disabled = false;
   btn.innerText = "Kirim Request Order";
+  showLoadingPopup();
 
   if(result.success){
 
-    alert(
-      "Request berhasil dikirim"
-    );
+  showSuccessPopup();
 
-  }else{
+}
+  else{
 
     alert(
       result.message
@@ -943,6 +995,62 @@ function scrollBottomPage(){
     top:document.body.scrollHeight,
     behavior:"smooth"
   });
+
+}
+
+function showLoadingPopup(){
+
+  document.getElementById(
+    "popupModal"
+  ).style.display = "flex";
+
+  document.getElementById(
+    "popupIcon"
+  ).innerHTML = "⏳";
+
+  document.getElementById(
+    "popupTitle"
+  ).innerHTML =
+    "Mengirim Request Order...";
+
+  document.getElementById(
+    "popupText"
+  ).innerHTML =
+    "Mohon tunggu sebentar";
+
+  document.getElementById(
+    "popupBtn"
+  ).style.display = "none";
+
+}
+
+function showSuccessPopup(){
+
+  document.getElementById(
+    "popupIcon"
+  ).innerHTML = "✅";
+
+  document.getElementById(
+    "popupTitle"
+  ).innerHTML =
+    "Request Berhasil";
+
+  document.getElementById(
+    "popupText"
+  ).innerHTML =
+    "Data berhasil dikirim ke Purchasing";
+
+  document.getElementById(
+    "popupBtn"
+  ).style.display = "block";
+
+}
+
+function closePopup(){
+
+  document.getElementById(
+    "popupModal"
+  ).style.display = "none";
 
 }
   
@@ -985,6 +1093,35 @@ function formatTanggal(tgl){
     <span class="fab-icon">˅</span>
     <span class="fab-text">END</span>
   </button>
+
+</div>
+
+<div id="popupModal" class="popup-overlay">
+
+  <div class="popup-box">
+
+    <div id="popupIcon" class="popup-icon">
+      ⏳
+    </div>
+
+    <div id="popupTitle" class="popup-title">
+      Mengirim Request Order...
+    </div>
+
+    <div id="popupText" class="popup-text">
+      Mohon tunggu sebentar
+    </div>
+
+    <button
+      id="popupBtn"
+      class="popup-btn"
+      onclick="closePopup()"
+      style="display:none;"
+    >
+      OK
+    </button>
+
+  </div>
 
 </div>
   
