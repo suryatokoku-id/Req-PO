@@ -7,404 +7,374 @@
 <title>Request PO</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-  font-family:Arial,sans-serif;
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-body{
-  margin:0;
-  background:#f5f5f5;
+body {
+  margin: 0;
+  background: #f5f5f5;
 }
 
-#loading{
-  position:fixed;
-  inset:0;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+/* === MODERN MINIMALIST LOADING STYLES === */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-.container{
-  padding:15px;
+.spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid rgba(30, 75, 147, 0.1);
+  border-left-color: #1e4b93;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24px;
 }
 
-.card{
-  background:white;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:12px;
-  box-shadow:0 2px 5px rgba(0,0,0,.1);
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-label{
-  font-size:12px;
-  color:#666;
-  display:block;
-  margin-bottom:8px;
-  font-weight:500;
+.loading-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e4b93;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
 }
 
-select,input{
-  width:100%;
-  padding:10px;
-  border:1px solid #ddd;
-  border-radius:6px;
+.loading-text {
+  font-size: 14px;
+  color: #777;
+  font-weight: 500;
+  animation: pulse-text 1.5s infinite;
+  min-height: 20px;
 }
 
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:8px;
+@keyframes pulse-text {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+/* ======================================== */
+
+.container {
+  padding: 15px;
 }
 
-.total-box{
-  background:#1e4b93;
-  color:white;
-  padding:15px;
-  border-radius:10px;
-  font-size:20px;
-  font-weight:bold;
-  text-align:center;
-  margin-top:15px;
-  margin-bottom:5px;
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.1);
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
+label {
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
-th{
-  background:#1e4b93;
-  color:white;
-  padding:8px;
+select, input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
-td{
-  padding:8px;
-  border:1px solid #ddd;
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
 }
 
-.qty{
-  width:80px;
-  text-align:center;
+.total-box {
+  background: #1e4b93;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 5px;
 }
 
-button{
-  width:100%;
-  padding:15px;
-  border:none;
-  border-radius:8px;
-  background:#1e4b93;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
-.table-wrapper{
-  overflow:auto;
+th {
+  background: #1e4b93;
+  color: white;
+  padding: 8px;
 }
 
-.product-card{
-  background:#fff;
-  border-radius:10px;
-  padding:15px;
-  margin-bottom:12px;
-  box-shadow:0 2px 4px rgba(0,0,0,.08);
+td {
+  padding: 8px;
+  border: 1px solid #ddd;
 }
 
-.product-title{
-  font-size:15px;
-  font-weight:800;
-  color:#1e4b93;
-  margin-bottom:12px;
+.qty {
+  width: 80px;
+  text-align: center;
 }
 
-.top-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  margin-bottom:12px;
+button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #1e4b93;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.mid-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  margin-bottom:12px;
-  text-align:center;
+.table-wrapper {
+  overflow: auto;
 }
 
-.bottom-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  align-items:end;
+.product-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.08);
 }
 
-.label-small{
-  font-size:11px;
-  color:#777;
-  margin-bottom:4px;
+.product-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e4b93;
+  margin-bottom: 12px;
 }
 
-.value-small{
-  font-size:13px;
-  font-weight:600;
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 12px;
 }
 
-.qty-input{
-  width:100%;
-  padding:10px;
-  font-size:15px;
+.mid-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
-.jumlah-box{
-  width:100%;
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
 }
 
-.jumlah-value{
-  width:100%;
-  padding:10px;
-  border:1px solid #ddd;
-  border-radius:6px;
-  font-size:15px;
-  text-align:center;
-  background:#fafafa;
-  font-weight:600;
+.label-small {
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 4px;
 }
 
-select,input{
-  text-align:center;
+.value-small {
+  font-size: 13px;
+  font-weight: 600;
 }
 
-select{
-  text-align-last:center;
+.qty-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
 }
 
-.tanggal-title{
-  text-align:center;
-  font-size:13px;
-  color:#666;
-  margin-top:5px;
-  margin-bottom:5px;
-  font-weight:600;
+.jumlah-box {
+  width: 100%;
 }
 
-.page-title{
-  text-align:center;
-  font-size:28px;
-  font-weight:700;
-  color:#1e4b93;
-  margin-bottom:15px;
-  letter-spacing:1px;
+.jumlah-value {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  text-align: center;
+  background: #fafafa;
+  font-weight: 600;
+}
+
+select, input {
+  text-align: center;
+}
+
+select {
+  text-align-last: center;
+}
+
+.tanggal-title {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e4b93;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
 } 
 
-#searchProduct{
-  width:100%;
-  padding:12px;
-  border:1px solid #ddd;
-  border-radius:8px;
-  margin-top:12px;
-  margin-bottom:12px;
-  text-align:left;
-  font-size:14px;
+#searchProduct {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+  font-size: 14px;
 }
 
-.terminal-loader{
-  width:90%;
-  max-width:500px;
-  background:#111;
-  color:#00ff66;
-  padding:20px;
-  border-radius:12px;
-  font-family:Consolas,monospace;
-  box-shadow:0 0 20px rgba(0,255,100,.3);
+.ts-control {
+  border-radius: 6px !important;
+  min-height: 42px;
 }
 
-.terminal-title{
-  color:white;
-  font-weight:bold;
-  margin-bottom:15px;
-  border-bottom:1px solid #333;
-  padding-bottom:10px;
-  text-align:center;
-  font-size:18px;
-  letter-spacing:1px;
+.ts-control input {
+  text-align: left !important;
 }
 
-#terminalOutput{
-  line-height:1.8;
-  font-size:14px;
+.ts-dropdown {
+  font-size: 14px;
 }
 
-.terminal-line{
-  opacity:0;
-  animation:showLine .3s forwards;
+.ts-wrapper {
+  width: 100%;
 }
 
-@keyframes showLine{
-  from{
-    opacity:0;
-    transform:translateY(5px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+.ts-wrapper.single .ts-control {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 12px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd !important;
+  border-radius: 6px !important;
 }
 
-.ts-control{
-  border-radius:6px !important;
-  min-height:42px;
+.ts-wrapper.single .item {
+  width: 100%;
+  text-align: center;
+  line-height: 38px;
 }
 
-.ts-control input{
-  text-align:left !important;
+.floating-nav {
+  position: fixed;
+  right: 15px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 999;
+  transition: .3s;
 }
 
-.ts-dropdown{
-  font-size:14px;
+.fab-btn {
+  width: 50px;
+  height: 50px;
 }
 
-.ts-wrapper{
-  width:100%;
+.fab-icon {
+  font-size: 26px;
 }
-
-.ts-wrapper.single .ts-control{
-  height:38px !important;
-  min-height:38px !important;
-  padding:0 12px !important;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border:1px solid #ddd !important;
-  border-radius:6px !important;
-}
-
-.ts-wrapper.single .item{
-  width:100%;
-  text-align:center;
-  line-height:38px;
-}
-
-.floating-nav{
-  position:fixed;
-  right:15px;
-  bottom:20px;
-
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-
-  z-index:999;
-
-  transition:.3s;
-}
-
-.fab-btn{
-  width:50px;
-  height:50px;
-}
-
-.fab-icon{
-  font-size:26px;
-}
-
   
-.fab-btn:active{
-  transform:scale(.96);
+.fab-btn:active {
+  transform: scale(.96);
 }
 
-.waiting-line{
-  color:#ffd54f;
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
 }
 
-.popup-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-
-  display:none;
-  justify-content:center;
-  align-items:center;
-
-  z-index:99999;
+.popup-box {
+  width: 90%;
+  max-width: 320px;
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,.2);
 }
 
-.popup-box{
-  width:90%;
-  max-width:320px;
-
-  background:white;
-  border-radius:15px;
-
-  padding:25px;
-  text-align:center;
-
-  box-shadow:0 5px 20px rgba(0,0,0,.2);
+.popup-icon {
+  font-size: 50px;
+  margin-bottom: 10px;
 }
 
-.popup-icon{
-  font-size:50px;
-  margin-bottom:10px;
+.popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1e4b93;
+  margin-bottom: 8px;
 }
 
-.popup-title{
-  font-size:18px;
-  font-weight:bold;
-  color:#1e4b93;
-  margin-bottom:8px;
+.popup-text {
+  color: #666;
+  margin-bottom: 15px;
 }
 
-.popup-text{
-  color:#666;
-  margin-bottom:15px;
+.popup-btn {
+  width: 100%;
+  background: #1e4b93;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 15px;
 }
-
-.popup-btn{
-  width:100%;
-  background:#1e4b93;
-  color:white;
-  border:none;
-  border-radius:8px;
-  padding:12px;
-  font-size:15px;
-}
-
-
 </style>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
 </head>
 
 <body>
 
 <div id="loading">
-
-  <div class="terminal-loader">
-
-    <div class="terminal-title">
-      REQUEST ORDER TO PURCHASING
-    </div>
-
-    <div id="terminalOutput"></div>
-
-  </div>
-
+  <div class="spinner"></div>
+  <div class="loading-title">REQUEST ORDER</div>
+  <div id="loadingText" class="loading-text">Memulai sistem...</div>
 </div>
 
-<div id="app" style="display:none">
+<div id="app" style="display:none; opacity: 0;">
 
 <div class="container">
 
@@ -421,13 +391,11 @@ select{
 <div style="height:8px;"></div>
 
 <div class="row">
-
   <div>
     <select id="group">
       <option value="">Grup PO</option>
     </select>
   </div>
-
   <div>
     <input
       id="noPo"
@@ -435,7 +403,6 @@ select{
       placeholder="No PO"
     />
   </div>
-
 </div>
 
 <br>
@@ -445,21 +412,18 @@ select{
 </div>
 
 <div class="row">
-
   <div>
     <input
       id="tglPo"
       readonly
     />
   </div>
-
   <div>
     <input
       id="ket"
       readonly
     />
   </div>
-
 </div>
 
 <input
@@ -488,9 +452,7 @@ Kirim Request Order
 </div>
 
 <script>
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbwhKlYa8ujUQIrn2vPhqBfuW7wDdYu9npGNZ5usO8dXpAVa2RahDVw0kUW0FuULCLxy/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwhKlYa8ujUQIrn2vPhqBfuW7wDdYu9npGNZ5usO8dXpAVa2RahDVw0kUW0FuULCLxy/exec";
 
 let ALL_DATA = [];
 let CURRENT_ITEMS = [];
@@ -502,126 +464,109 @@ let picSelect;
 let groupSelect;
 
 const loadingSteps = [
-  "Memuat data PIC",
-  "Memuat data Grup PO",
-  "Memuat data Master Item",
-  "Memuat Qty On Hand",
-  "Memuat Standar Stok",
-  "Memuat Data Penjualan",
-  "Mohon tunggu...",
-  "Memuat semua data"
+  "Memuat data PIC...",
+  "Memuat data Grup PO...",
+  "Memuat Master Item...",
+  "Sinkronisasi data...",
+  "Mohon tunggu sebentar..."
 ];
 
-async function playLoading(){
+let loadingInterval;
 
-  const output =
-    document.getElementById(
-      "terminalOutput"
-    );
-
-  for(const step of loadingSteps){
-
-    const line =
-      document.createElement("div");
-
-    line.className =
-      "terminal-line";
-
-    if(
-  step === "Mohon tunggu..." ||
-  step === "Memuat semua data"
-){
-
-  line.classList.add(
-    "waiting-line"
-  );
-
-  line.innerHTML =
-    "> " + step;
-
-}else{
-
-  line.innerHTML =
-    "✓ " + step;
-
+function startLoadingText(){
+  const output = document.getElementById("loadingText");
+  let stepIndex = 0;
+  output.innerHTML = loadingSteps[0];
+  
+  // Teks berganti setiap 800ms tanpa menghentikan proses fetch
+  loadingInterval = setInterval(() => {
+    stepIndex = (stepIndex + 1) % loadingSteps.length;
+    output.innerHTML = loadingSteps[stepIndex];
+  }, 800); 
 }
 
-    output.appendChild(line);
+function stopLoadingText(){
+  clearInterval(loadingInterval);
+}
 
-    await new Promise(
-      r => setTimeout(r,700)
-    );
+function hideLoadingScreen() {
+  stopLoadingText();
+  const output = document.getElementById("loadingText");
+  output.innerHTML = "Sistem siap digunakan";
 
-  }
-
+  // Animasi memudar lebih cepat
+  setTimeout(() => {
+    const loader = document.getElementById("loading");
+    loader.style.opacity = '0'; 
+    
+    setTimeout(() => {
+      loader.style.display = "none";
+      const app = document.getElementById("app");
+      app.style.display = "block";
+      app.animate([{opacity: 0}, {opacity: 1}], {duration: 400, fill: 'forwards'});
+    }, 400); 
+  }, 300);
 }
 
 loadData();
 
 async function loadData(){
+  startLoadingText();
+  
+  try {
+    // 1. CEK CACHE (Membuat loading web KEDUA dan seterusnya menjadi INSTAN)
+    const cachedData = localStorage.getItem("DATA_PO_CACHE");
+    if(cachedData) {
+      const data = JSON.parse(cachedData);
+      ALL_DATA = data.items;
+      fillPIC(data.pics);
+      fillGroup(data.groups);
+      hideLoadingScreen(); // Langsung sembunyikan loading karena pakai data cache
+    }
 
-  try{
+    // 2. FETCH DATA DARI GOOGLE SHEET (Berjalan di belakang layar jika sudah ada cache)
+    const res = await fetch(API_URL + "?action=all");
+    const data = await res.json();
 
-    const loadingPromise =
-      playLoading();
+    // 3. SIMPAN KE CACHE UNTUK KUNJUNGAN BERIKUTNYA
+    localStorage.setItem("DATA_PO_CACHE", JSON.stringify(data));
 
-    const fetchPromise =
-      fetch(API_URL + "?action=all");
-
-    const res =
-      await fetchPromise;
-
-    const data =
-      await res.json();
-
+    // 4. UPDATE DATA MEMORI
     ALL_DATA = data.items;
+    
+    // Jika belum ada cache (baru pertama kali buka web)
+    if(!cachedData) {
+      fillPIC(data.pics);
+      fillGroup(data.groups);
+      hideLoadingScreen();
+    } else {
+      // Refresh dropdown diam-diam jika ternyata ada update item/grup baru dari Sheet
+      const currentPic = document.getElementById("pic").value;
+      const currentGroup = document.getElementById("group").value;
+      
+      fillPIC(data.pics);
+      fillGroup(data.groups);
+      
+      // Kembalikan pilihan user sebelumnya agar tidak reset saat data ter-update
+      if(currentPic && picSelect) picSelect.setValue(currentPic, true);
+      if(currentGroup && groupSelect) groupSelect.setValue(currentGroup, true);
+    }
 
-    fillPIC(data.pics);
-    fillGroup(data.groups);
-
-    await loadingPromise;
-
-    const output =
-      document.getElementById(
-        "terminalOutput"
-      );
-
-    output.innerHTML +=
-      '<div class="terminal-line">✓ Sistem siap digunakan</div>';
-
-    setTimeout(()=>{
-
-      document.getElementById("loading")
-        .style.display="none";
-
-      document.getElementById("app")
-        .style.display="block";
-
-    },500);
-
-  }catch(err){
-
-    alert("Gagal memuat data");
-
+  } catch(err) {
+    stopLoadingText();
+    const output = document.getElementById("loadingText");
+    output.innerHTML = "Gagal memuat data. Periksa koneksi Anda.";
+    output.style.color = "#dc3545"; 
+    document.querySelector('.spinner').style.borderColor = "#dc3545 transparent #dc3545 #dc3545";
     console.log(err);
-
   }
-
 }
 
 function fillPIC(pics){
-
-  const pic =
-    document.getElementById("pic");
-
-  pic.innerHTML =
-    '<option value="">Pilih PIC</option>';
-
+  const pic = document.getElementById("pic");
+  pic.innerHTML = '<option value="">Pilih PIC</option>';
   pics.forEach(x=>{
-
-    pic.innerHTML +=
-      `<option value="${x}">${x}</option>`;
-
+    pic.innerHTML += `<option value="${x}">${x}</option>`;
   });
 
   if(picSelect){
@@ -629,32 +574,19 @@ function fillPIC(pics){
   }
 
   picSelect = new TomSelect("#pic",{
-  create:false,
-  placeholder:"Pilih PIC...",
-
-  onChange:function(){
-
-    this.blur();
-
-  }
-
-});
-
+    create:false,
+    placeholder:"Pilih PIC...",
+    onChange:function(){
+      this.blur();
+    }
+  });
 }
 
 function fillGroup(groups){
-
-  const group =
-    document.getElementById("group");
-
-  group.innerHTML =
-    '<option value="">Grup PO</option>';
-
+  const group = document.getElementById("group");
+  group.innerHTML = '<option value="">Grup PO</option>';
   groups.forEach(x=>{
-
-    group.innerHTML +=
-      `<option value="${x}">${x}</option>`;
-
+    group.innerHTML += `<option value="${x}">${x}</option>`;
   });
 
   if(groupSelect){
@@ -662,30 +594,19 @@ function fillGroup(groups){
   }
 
   groupSelect = new TomSelect("#group",{
-  create:false,
-  placeholder:"Cari Grup PO...",
-
-  onChange:function(){
-
-    this.blur();
-
-  }
-
-});
-  group.addEventListener(
-    "change",
-    loadGroup
-  );
-
+    create:false,
+    placeholder:"Cari Grup PO...",
+    onChange:function(){
+      this.blur();
+    }
+  });
+  
+  group.addEventListener("change", loadGroup);
 }
 
 function loadGroup(){
-
-  const selected =
-    document.getElementById("group").value;
-
-  CURRENT_ITEMS =
-  ALL_DATA
+  const selected = document.getElementById("group").value;
+  CURRENT_ITEMS = ALL_DATA
     .filter(x => x.grupPo === selected)
     .map((item,index) => ({
       ...item,
@@ -696,366 +617,195 @@ function loadGroup(){
 
   if(CURRENT_ITEMS.length===0) return;
 
-  document.getElementById("noPo").value =
-    CURRENT_ITEMS[0].noPo;
-
-  document.getElementById("tglPo").value =
-  formatTanggal(
-    CURRENT_ITEMS[0].tglPo
-  );
-
-  document.getElementById("ket").value =
-    CURRENT_ITEMS[0].keterangan;
+  document.getElementById("noPo").value = CURRENT_ITEMS[0].noPo;
+  document.getElementById("tglPo").value = formatTanggal(CURRENT_ITEMS[0].tglPo);
+  document.getElementById("ket").value = CURRENT_ITEMS[0].keterangan;
 
   renderTable();
-
 }
 
 function filterProduct(){
-
-  const keyword =
-    document.getElementById("searchProduct")
-    .value
-    .toLowerCase();
-
-  FILTERED_ITEMS =
-    CURRENT_ITEMS.filter(item =>
-
-      item.namaBarang
-        .toLowerCase()
-        .includes(keyword)
-
-      ||
-
-      String(item.barcode)
-        .toLowerCase()
-        .includes(keyword)
-
-    );
-
+  const keyword = document.getElementById("searchProduct").value.toLowerCase();
+  FILTERED_ITEMS = CURRENT_ITEMS.filter(item =>
+    item.namaBarang.toLowerCase().includes(keyword) ||
+    String(item.barcode).toLowerCase().includes(keyword)
+  );
   renderTable();
-
 }
 
 function renderTable(){
-
   let html = "";
-
   FILTERED_ITEMS.forEach((r)=>{
-    
     r.qtyReq = r.qtyReq || 0;
     r.jumlahRp = r.jumlahRp || 0;
 
     html += `
-
     <div class="product-card">
-
-      <div class="product-title">
-        ${r.namaBarang}
-      </div>
-
+      <div class="product-title">${r.namaBarang}</div>
       <div class="top-grid">
-
-  <div>
-
-    <div class="label-small">
-      Barcode
-    </div>
-
-    <div class="value-small">
-      ${r.barcode}
-    </div>
-
-    <br>
-
-    <div class="label-small">
-      Std. Stok 2 Minggu
-    </div>
-
-    <div class="value-small">
-      ${r.stdStok}
-    </div>
-
-  </div>
-
-  <div>
-
-    <div class="label-small">
-      QOH
-    </div>
-
-    <div class="value-small">
-      ${r.qoh}
-    </div>
-
-    <br>
-
-    <div class="label-small">
-      Penj. 2 Minggu Terakhir
-    </div>
-
-    <div class="value-small">
-      ${r.penjualan}
-    </div>
-
-  </div>
-
-</div>
-
-      <div class="bottom-grid">
-
         <div>
-          <div class="label-small">
-            Qty Request
-          </div>
-
-          <input
-  class="qty-input"
-  type="number"
-  min="0"
-  value="${r.qtyReq || ''}"
-  placeholder="0"
-  oninput="updateQty(${r.itemId},this.value)"
->
+          <div class="label-small">Barcode</div>
+          <div class="value-small">${r.barcode}</div>
+          <br>
+          <div class="label-small">Std. Stok 2 Minggu</div>
+          <div class="value-small">${r.stdStok}</div>
         </div>
-
-        <div class="jumlah-box">
-
-          <div class="label-small">
-            Jumlah HPP
-          </div>
-
-          <div
-  class="jumlah-value"
-  id="rp${r.itemId}"
->
-  Rp ${format(r.jumlahRp || 0)}
-</div>
-
+        <div>
+          <div class="label-small">QOH</div>
+          <div class="value-small">${r.qoh}</div>
+          <br>
+          <div class="label-small">Penj. 2 Minggu Terakhir</div>
+          <div class="value-small">${r.penjualan}</div>
         </div>
-
       </div>
-
+      <div class="bottom-grid">
+        <div>
+          <div class="label-small">Qty Request</div>
+          <input
+            class="qty-input"
+            type="number"
+            min="0"
+            value="${r.qtyReq || ''}"
+            placeholder="0"
+            oninput="updateQty(${r.itemId},this.value)"
+          >
+        </div>
+        <div class="jumlah-box">
+          <div class="label-small">Jumlah HPP</div>
+          <div class="jumlah-value" id="rp${r.itemId}">
+            Rp ${format(r.jumlahRp || 0)}
+          </div>
+        </div>
+      </div>
     </div>
-
     `;
-
   });
 
-  document.getElementById("productList")
-    .innerHTML = html;
-
+  document.getElementById("productList").innerHTML = html;
   calculateTotal();
-
 }
 
 function updateQty(itemId,val){
-
   val = Number(val) || 0;
-
-  const item =
-    CURRENT_ITEMS.find(
-      x => x.itemId === itemId
-    );
-
+  const item = CURRENT_ITEMS.find(x => x.itemId === itemId);
   if(!item) return;
 
   item.qtyReq = val;
   item.jumlahRp = val * item.hpp;
 
-  const rpElement =
-    document.getElementById(
-      "rp" + itemId
-    );
-
+  const rpElement = document.getElementById("rp" + itemId);
   if(rpElement){
-    rpElement.innerHTML =
-      "Rp " +
-      format(item.jumlahRp);
+    rpElement.innerHTML = "Rp " + format(item.jumlahRp);
   }
-
   calculateTotal();
-
 }
 
 function calculateTotal(){
-
   let total = 0;
-
   CURRENT_ITEMS.forEach(x=>{
-
-    total += Number(
-      x.jumlahRp || 0
-    );
-
+    total += Number(x.jumlahRp || 0);
   });
-
-  document.getElementById(
-    "totalHpp"
-  ).innerHTML =
-    format(total);
-
+  document.getElementById("totalHpp").innerHTML = format(total);
 }
 
 async function submitPO(){
-
-  const pic =
-    document.getElementById("pic").value;
-
-  const grupPo =
-    document.getElementById("group").value;
-
-  const noPo =
-    document.getElementById("noPo").value;
+  const pic = document.getElementById("pic").value;
+  const grupPo = document.getElementById("group").value;
+  const noPo = document.getElementById("noPo").value;
 
   if(!pic){
     alert("Pilih PIC");
     return;
   }
-
   if(!grupPo){
     alert("Pilih Grup PO");
     return;
   }
 
-  const items =
-    CURRENT_ITEMS.filter(
-      x=>x.qtyReq>0
-    );
+  const items = CURRENT_ITEMS.filter(x=>x.qtyReq>0);
 
   if(items.length===0){
     alert("Tidak ada Qty Request");
     return;
   }
 
-  const btn =
-  document.querySelector("button");
+  const btn = document.querySelector("button");
+  btn.disabled = true;
 
-btn.disabled = true;
+  showLoadingPopup();
 
-showLoadingPopup();
-
-  const payload = {
-    pic,
-    grupPo,
-    noPo,
-    items
-  };
+  const payload = { pic, grupPo, noPo, items };
   lastGroupPo = grupPo;
   lastPic = pic;
 
-  const res =
-    await fetch(API_URL,{
+  try {
+    const res = await fetch(API_URL,{
       method:"POST",
       body:JSON.stringify(payload)
     });
+    const result = await res.json();
+    btn.disabled = false;
 
-  const result =
-    await res.json();
-
-  btn.disabled = false;
-
-  if(result.success){
-
-  showSuccessPopup();
-
-}
-  else{
-
-    showErrorPopup(result.message);
+    if(result.success){
+      showSuccessPopup();
+    } else {
+      showErrorPopup(result.message);
+    }
+  } catch (error) {
+    btn.disabled = false;
+    alert("Terjadi kesalahan saat mengirim data.");
+    console.error(error);
   }
-
 }
 
 function scrollTopPage(){
-
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
-
 }
 
 function scrollBottomPage(){
-
   window.scrollTo({
     top:document.body.scrollHeight,
     behavior:"smooth"
   });
-
 }
 
 function showLoadingPopup(){
-
-  document.getElementById(
-    "popupModal"
-  ).style.display = "flex";
-
-  document.getElementById(
-    "popupIcon"
-  ).innerHTML = "⏳";
-
-  document.getElementById(
-    "popupTitle"
-  ).innerHTML =
-    "Mengirim Request Order...";
-
-  document.getElementById(
-    "popupText"
-  ).innerHTML =
-    "Mohon tunggu sebentar";
-
-  document.getElementById(
-    "popupBtn"
-  ).style.display = "none";
-
+  document.getElementById("popupModal").style.display = "flex";
+  document.getElementById("popupIcon").innerHTML = "⏳";
+  document.getElementById("popupTitle").innerHTML = "Mengirim Request Order...";
+  document.getElementById("popupText").innerHTML = "Mohon tunggu sebentar";
+  document.getElementById("popupBtn").style.display = "none";
 }
 
 function showSuccessPopup(){
+  document.getElementById("popupIcon").innerHTML = "✅";
+  document.getElementById("popupTitle").innerHTML = "Request Berhasil";
+  document.getElementById("popupText").innerHTML = "Klik OK untuk mengirim notifikasi ke tim Purchasing";
+  document.getElementById("popupBtn").style.display = "block";
+  document.getElementById("popupBtn").innerHTML = "OK";
+}
 
-  document.getElementById(
-    "popupIcon"
-  ).innerHTML = "✅";
-
-  document.getElementById(
-    "popupTitle"
-  ).innerHTML =
-    "Request Berhasil";
-
-  document.getElementById(
-    "popupText"
-  ).innerHTML =
-    "Klik OK untuk mengirim notifikasi ke tim Purchasing";
-
-  document.getElementById(
-    "popupBtn"
-  ).style.display = "block";
-
-  document.getElementById(
-    "popupBtn"
-  ).innerHTML =
-    "OK";
-
+function showErrorPopup(msg){
+  document.getElementById("popupIcon").innerHTML = "❌";
+  document.getElementById("popupTitle").innerHTML = "Gagal!";
+  document.getElementById("popupText").innerHTML = msg || "Terjadi kesalahan";
+  document.getElementById("popupBtn").style.display = "block";
+  document.getElementById("popupBtn").innerHTML = "Tutup";
+  document.getElementById("popupBtn").onclick = () => {
+     document.getElementById("popupModal").style.display = "none";
+  };
 }
 
 function closePopup(){
-
-  const pesan =
-  `Punten min, ${lastPic} sudah request order PO ${lastGroupPo} ya. Terima kasih 😊🙏`;
-
-  const url =
-    "https://wa.me/62895402963709?text=" +
-    encodeURIComponent(pesan);
-
-  window.open(
-    url,
-    "_blank"
-  );
+  const pesan = `Punten min, ${lastPic} sudah request order PO ${lastGroupPo} ya. Terima kasih 😊🙏`;
+  const url = "https://wa.me/62895402963709?text=" + encodeURIComponent(pesan);
+  window.open(url, "_blank");
 
   // Tutup popup
-  document.getElementById(
-    "popupModal"
-  ).style.display = "none";
+  document.getElementById("popupModal").style.display = "none";
 
   // Reset data
   CURRENT_ITEMS = [];
@@ -1073,96 +823,55 @@ function closePopup(){
   if(picSelect){
     picSelect.clear();
   }
-
   // Reset Tom Select Grup PO
   if(groupSelect){
     groupSelect.clear();
   }
-
 }
   
 function format(num){
-
-  return Math.round(
-    Number(num)
-  ).toLocaleString("id-ID");
-
+  return Math.round(Number(num)).toLocaleString("id-ID");
 }
 
 function formatTanggal(tgl){
-
   if(!tgl) return "";
-
   const d = new Date(tgl);
-
-  const hari =
-    String(d.getDate()).padStart(2,"0");
-
-  const bulan =
-    String(d.getMonth()+1).padStart(2,"0");
-
-  const tahun =
-    d.getFullYear();
-
+  const hari = String(d.getDate()).padStart(2,"0");
+  const bulan = String(d.getMonth()+1).padStart(2,"0");
+  const tahun = d.getFullYear();
   return `${hari}-${bulan}-${tahun}`;
-
 }
 
 window.addEventListener("scroll", () => {
-
-  const floatingNav =
-    document.querySelector(".floating-nav");
-
-  const scrollPosition =
-    window.innerHeight + window.scrollY;
-
-  const pageHeight =
-    document.body.offsetHeight;
+  const floatingNav = document.querySelector(".floating-nav");
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const pageHeight = document.body.offsetHeight;
 
   if(scrollPosition >= pageHeight - 50){
-
     floatingNav.style.opacity = "0";
     floatingNav.style.pointerEvents = "none";
-
   }else{
-
     floatingNav.style.opacity = "1";
     floatingNav.style.pointerEvents = "auto";
-
   }
-
 });
   
 </script>
 
 <div class="floating-nav">
-
   <button class="fab-btn" onclick="scrollTopPage()">
-  <span class="fab-icon">⌃</span>
-</button>
-
-<button class="fab-btn" onclick="scrollBottomPage()">
-  <span class="fab-icon">˅</span>
-</button>
-
+    <span class="fab-icon">⌃</span>
+  </button>
+  <button class="fab-btn" onclick="scrollBottomPage()">
+    <span class="fab-icon">˅</span>
+  </button>
 </div>
 
 <div id="popupModal" class="popup-overlay">
-
   <div class="popup-box">
-
-    <div id="popupIcon" class="popup-icon">
-      ⏳
-    </div>
-
-    <div id="popupTitle" class="popup-title">
-      Mengirim Request Order...
-    </div>
-
-    <div id="popupText" class="popup-text">
-      Mohon tunggu sebentar
-    </div>
-
+    <div id="popupIcon" class="popup-icon">⏳</div>
+    <div id="popupTitle" class="popup-title">Mengirim Request Order...</div>
+    <div id="popupText" class="popup-text">Mohon tunggu sebentar</div>
     <button
       id="popupBtn"
       class="popup-btn"
@@ -1171,10 +880,9 @@ window.addEventListener("scroll", () => {
     >
       OK
     </button>
-
   </div>
-
 </div>
   
+</div>
 </body>
 </html>
