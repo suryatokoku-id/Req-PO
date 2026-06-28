@@ -764,10 +764,12 @@ input[readonly] {
 
 /* Extra small devices responsive check */
 @media (max-width: 360px) {
-  .row, .top-grid, .bottom-grid {
+  /* Hanya baris form utama (PIC, Grup, No PO) yang menurun ke bawah jika layar terlalu sempit */
+  .row {
     grid-template-columns: 1fr;
     gap: 8px;
   }
+  /* .top-grid (Barcode & QOH) dan .bottom-grid (Qty & HPP) tetap dipertahankan 2 kolom sejajar */
 }
 </style>
 </head>
