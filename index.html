@@ -145,7 +145,7 @@ body {
 /* === APP HEADER === */
 .app-header {
   background: var(--primary-gradient);
-  padding: 40px 24px 64px 24px;
+  padding: 36px 24px 60px 24px;
   text-align: center;
   color: white;
   border-bottom-left-radius: 36px;
@@ -155,8 +155,8 @@ body {
 }
 
 .header-icon {
-  font-size: 44px;
-  margin-bottom: 8px;
+  font-size: 40px;
+  margin-bottom: 6px;
   display: inline-block;
   animation: float 3s ease-in-out infinite;
 }
@@ -178,8 +178,73 @@ body {
   opacity: 0.9;
   font-weight: 400;
   max-width: 320px;
-  margin: 0 auto;
+  margin: 0 auto 12px auto;
   line-height: 1.5;
+}
+
+/* === SYNC STATUS BADGE === */
+.sync-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+/* Sync States */
+.sync-badge.loading {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.sync-badge.loading .sync-dot {
+  background-color: var(--orange-color);
+  animation: pulse-dot 1s infinite alternate;
+}
+
+.sync-badge.cached {
+  border-color: rgba(6, 182, 212, 0.3);
+}
+.sync-badge.cached .sync-dot {
+  background-color: var(--cyan-color);
+  animation: pulse-dot 1s infinite alternate;
+}
+
+.sync-badge.success {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #E6FDF4;
+}
+.sync-badge.success .sync-dot {
+  background-color: #34D399;
+}
+
+.sync-badge.failed {
+  background: rgba(239, 68, 110, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #FEE2E2;
+}
+.sync-badge.failed .sync-dot {
+  background-color: #F87171;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.3); opacity: 1; }
 }
 
 /* === MAIN CONTAINER & OVERLAPPING CARD === */
@@ -795,6 +860,12 @@ input[readonly] {
       <div class="header-icon">📦</div>
       <h1 class="page-title">REQUEST ORDER</h1>
       <p class="page-subtitle">Pilih Grup PO tujuan Anda, lalu tentukan jumlah request barang yang dibutuhkan.</p>
+      
+      <!-- Modern Sync Status Badge -->
+      <div id="syncStatus" class="sync-badge loading">
+        <span class="sync-dot"></span>
+        <span id="syncStatusText">Menghubungkan ke sistem...</span>
+      </div>
     </div>  
       
     <div class="container">
@@ -910,7 +981,7 @@ input[readonly] {
 </div>
 
 <script>
-// === LOGIKA JAVASCRIPT ASLI (TIDAK ADA PERUBAHAN SISTEM) ===
+// === LOGIKA JAVASCRIPT ASLI (DENGAN PENAMBAHAN STATUS SINKRONISASI CACHE) ===
 const API_URL = "https://script.google.com/macros/s/AKfycbwhKlYa8ujUQIrn2vPhqBfuW7wDdYu9npGNZ5usO8dXpAVa2RahDVw0kUW0FuULCLxy/exec";
 
 let ALL_DATA = [];
@@ -965,10 +1036,21 @@ function hideLoadingScreen() {
   }, 300);
 }
 
+// Helper untuk memperbarui status sinkronisasi di UI
+function updateSyncStatus(status, text) {
+  const badge = document.getElementById("syncStatus");
+  const textEl = document.getElementById("syncStatusText");
+  if (badge && textEl) {
+    badge.className = "sync-badge " + status;
+    textEl.innerHTML = text;
+  }
+}
+
 loadData();
 
 async function loadData(){
   startLoadingText();
+  updateSyncStatus('loading', 'Menghubungkan ke server...');
   
   try {
     const cachedData = localStorage.getItem("DATA_PO_CACHE");
@@ -978,6 +1060,9 @@ async function loadData(){
       fillPIC(data.pics);
       fillGroup(data.groups);
       hideLoadingScreen();
+      
+      // Update info: Menggunakan cache lokal sambil menunggu fetch latar belakang
+      updateSyncStatus('cached', 'Mode offline cache (Sinkronisasi...)');
     }
 
     const res = await fetch(API_URL + "?action=all");
@@ -990,6 +1075,9 @@ async function loadData(){
       fillPIC(data.pics);
       fillGroup(data.groups);
       hideLoadingScreen();
+      
+      // Berhasil pertama kali tanpa cache
+      updateSyncStatus('success', 'Data sinkron & terbaru dari server');
     } else {
       const currentPic = document.getElementById("pic").value;
       const currentGroup = document.getElementById("group").value;
@@ -998,16 +1086,30 @@ async function loadData(){
       fillGroup(data.groups);
       
       if(currentPic && picSelect) picSelect.setValue(currentPic, true);
-      if(currentGroup && groupSelect) groupSelect.setValue(currentGroup, true);
+      if(currentGroup && groupSelect) {
+        groupSelect.setValue(currentGroup, true);
+        loadGroup(); // Re-render daftar barang agar data terbaru langsung dimuat
+      }
+      
+      // Update info: Sinkronisasi latar belakang berhasil diselesaikan
+      updateSyncStatus('success', 'Data sinkron & terbaru dari server');
     }
 
   } catch(err) {
     stopLoadingText();
-    const output = document.getElementById("loadingText");
-    output.innerHTML = "Gagal memuat data. Periksa koneksi Anda.";
-    output.style.color = "#dc3545"; 
-    document.querySelector('.spinner-outer').style.borderColor = "#dc3545 transparent #dc3545 #dc3545";
     console.log(err);
+    
+    const cachedData = localStorage.getItem("DATA_PO_CACHE");
+    if(cachedData) {
+      // Gagal update, namun user sudah menggunakan data cache
+      updateSyncStatus('failed', 'Gagal update, menggunakan data offline');
+    } else {
+      const output = document.getElementById("loadingText");
+      output.innerHTML = "Gagal memuat data. Periksa koneksi Anda.";
+      output.style.color = "#dc3545"; 
+      document.querySelector('.spinner-outer').style.borderColor = "#dc3545 transparent #dc3545 #dc3545";
+      updateSyncStatus('failed', 'Koneksi gagal. Aplikasi offline.');
+    }
   }
 }
 
